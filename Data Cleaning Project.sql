@@ -1,6 +1,8 @@
 CREATE DATABASE IF NOT EXISTS data_cleaning_project;
 USE data_cleaning_project;
 
+-----------------------------------------------------------------------------------------------------------------
+
 DROP TABLE Nashville_Housing;
 
 CREATE TABLE Nashville_Housing
@@ -27,6 +29,8 @@ CREATE TABLE Nashville_Housing
 );
    
 
+-----------------------------------------------------------------------------------------------------------------------------------
+
 
 SHOW VARIABLES LIKE "secure_file_priv";
 
@@ -49,6 +53,7 @@ SET LandUse = NULLIF(LandUse, ' '),
     FullBath = NULLIF(FullBath, ' '),
     HalfBath = NULLIF(HalfBath, ' ');
 
+
 SELECT * FROM nashville_housing;
 
 DESCRIBE nashville_housing;
@@ -63,11 +68,13 @@ ALTER TABLE nashville_housing MODIFY TotalValue INT NULL;
 ALTER TABLE nashville_housing MODIFY Bedrooms INT NULL;
 ALTER TABLE nashville_housing MODIFY FullBath INT NULL;
 
-
+------------------------------------------------------------------------------------------------------------------------------------
 
 -- DATA CLEANING
 
 SELECT * FROM nashville_housing;
+
+------------------------------------------------------------------------------------------------------------------------------------
 
 -- Standardized Date Format:
 
@@ -78,6 +85,9 @@ ADD COLUMN SaleDateConverted DATE;
 
 UPDATE Nashville_Housing
 SET SaleDateConverted = STR_TO_DATE(SaleDate, '%M %e, %Y');
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
 
 
 -- Populate Property Address Data for NULL Values
@@ -105,6 +115,10 @@ WHERE a.PropertyAddress IS NULL;
 SELECT * FROM Nashville_Housing
 WHERE PropertyAddress IS NULL;
 
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
 -- Breaking out Property & Owner Addresses into Individual Columns (Address, City, State)
 -- Beaking out Property Address
 
@@ -128,6 +142,10 @@ UPDATE Nashville_Housing
 SET PropertySplitCity = TRIM(SUBSTRING_INDEX(PropertyAddress, ',', -1));
 
 SELECT * FROM Nashville_Housing;
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
 
 -- Breaking out Owner Address
 
@@ -160,6 +178,9 @@ SET OwnerSplitState = TRIM(SUBSTRING_INDEX(OwnerAddress, ',',-1));
 SELECT * FROM Nashville_Housing;
 
 
+--------------------------------------------------------------------------------------------------------------------------------
+
+
 -- Change Y and N to Yes and No in "Sold as Vacant" field
 
 SELECT DISTINCT(SoldAsVacant), COUNT(SoldAsVacant) FROM Nashville_Housing
@@ -179,6 +200,10 @@ CASE WHEN SoldAsVacant = "N" THEN "No"
 	 WHEN SoldAsVacant = "Y" THEN "Yes"
 	 ELSE SoldAsVacant
 END;
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
 
 -- Removing Duplicates
 
@@ -200,6 +225,10 @@ SELECT * FROM Row_Num_CTE
 WHERE Row_num > 1
 ORDER BY PropertyAddress;
 
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
 -- To deleting the duplicates
 
 DELETE FROM Nashville_Housing
@@ -215,7 +244,11 @@ WHERE UniqueID IN (
     ) AS subquery
     WHERE Row_num > 1
 );
-              
+    
+    
+-----------------------------------------------------------------------------------------------------------------------------------------
+
+    
  -- Delete Unused Columns
  
  SELECT * FROM Nashville_Housing;
